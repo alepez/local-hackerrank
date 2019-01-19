@@ -37,11 +37,15 @@ wrong actual expected =
   "\nActual output\n" ++
   actual
 
+
+trimnl :: String -> String
+trimnl = reverse . dropWhile (=='\n') . reverse
+
 runWithInputAndCheckOutput :: String -> String -> String -> String -> IO ()
 runWithInputAndCheckOutput lang program inputFile outputFile = do
   actualOutput <- run lang program inputFile
   expectedOutput <- readFile outputFile
-  putStrLn $ if actualOutput == expectedOutput
+  putStrLn $ if trimnl actualOutput == trimnl expectedOutput
              then passed
              else wrong actualOutput expectedOutput
 
