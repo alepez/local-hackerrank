@@ -4,6 +4,7 @@ module Lib
 
 import Control.Applicative
 import Options
+import qualified Haskell
 
 data MainOptions = MainOptions
   { optLang :: String
@@ -23,13 +24,32 @@ instance Options MainOptions where
         <*> simpleOption "output" "output.txt"
             "Output file"
 
-foo :: MainOptions -> IO ()
-foo opts = do
+run :: String -> String -> String -> IO String
+run "hs" = Haskell.run
+
+passed = "Passed :)"
+
+wrong :: String -> String -> String
+wrong actual expected =
+  "Wrong\n" ++
+  "Expected output:\n" ++
+  expected ++
+  "\nActual output\n" ++
+  actual
+
+runWithInputAndCheckOutput :: String -> String -> String -> String -> IO ()
+runWithInputAndCheckOutput lang program inputFile outputFile = do
+  actualOutput <- run lang program inputFile
+  expectedOutput <- readFile outputFile
+  putStrLn $ if actualOutput == expectedOutput
+             then passed
+             else wrong actualOutput expectedOutput
+
+localHackerRank :: IO ()
+localHackerRank = runCommand $ \opts _ -> do
   let lang = optLang opts
   let program = optProgram opts
   let inputFile = optInput opts
   let outputFile = optOutput opts
-  print [lang, program, inputFile, outputFile]
+  runWithInputAndCheckOutput lang program inputFile outputFile
 
-localHackerRank :: IO ()
-localHackerRank = runCommand $ \opts _ -> foo opts
