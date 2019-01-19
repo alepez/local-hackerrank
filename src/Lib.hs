@@ -1,6 +1,6 @@
 module Lib
-    ( someFunc
+    ( localHackerRank
     ) where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+localHackerRank :: IO ()
+localHackerRank = putStrLn "localHackerRank"
