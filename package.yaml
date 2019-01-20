@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - options
 - process
+- filepath
 
 library:
   source-dirs: src

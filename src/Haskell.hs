@@ -4,20 +4,22 @@ module Haskell
 
 import System.Process (readProcessWithExitCode)
 import System.Exit
+import System.FilePath.Posix (dropExtension)
 
 compileCmd :: FilePath -> (FilePath, [String])
 compileCmd program = ("/home/pez/.local/bin/stack", ["ghc", program])
 
 type ErrorMessage = String
 
-compileResult :: (ExitCode, String, String) -> Either ErrorMessage FilePath
-compileResult (ExitSuccess, _, _) = Right "ok"
-compileResult (ExitFailure _, _, errorMessage) = Left errorMessage
+compileResult :: FilePath -> (ExitCode, String, String) -> Either ErrorMessage FilePath
+compileResult executable (ExitSuccess, _, _) = Right executable
+compileResult _ (ExitFailure _, _, errorMessage) = Left errorMessage
 
 compile :: FilePath -> IO (Either ErrorMessage FilePath)
 compile program = do
   let (compiler, args) = compileCmd program
-  compileResult <$> readProcessWithExitCode compiler args ""
+  let executable = dropExtension program
+  compileResult executable <$> readProcessWithExitCode compiler args ""
 
 runResult :: (ExitCode, String, String) -> String
 runResult (ExitSuccess, stdout, _) = stdout
@@ -28,7 +30,7 @@ runWithInput executable input = runResult <$> readProcessWithExitCode executable
 
 run :: String -> String -> IO String
 run program input = do
-  err <- compile program
-  case err of Right executable -> runWithInput executable input
-              Left errorMessage -> return errorMessage
+  compiled <- compile program
+  case compiled of Right executable -> runWithInput executable input
+                   Left errorMessage -> return errorMessage
 
