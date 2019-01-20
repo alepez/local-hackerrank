@@ -26,11 +26,11 @@ runResult (ExitSuccess, stdout, _) = stdout
 runResult (ExitFailure _, _, errorMessage) = errorMessage
 
 runWithInput :: FilePath -> String -> IO String
-runWithInput executable input = runResult <$> readProcessWithExitCode executable [] input
+runWithInput executable input = do
+  runResult <$> readProcessWithExitCode executable [] input
 
 run :: String -> String -> IO String
 run program input = do
   compiled <- compile program
   case compiled of Right executable -> runWithInput executable input
                    Left errorMessage -> return errorMessage
-

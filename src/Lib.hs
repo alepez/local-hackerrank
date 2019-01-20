@@ -43,7 +43,8 @@ trimnl = reverse . dropWhile (=='\n') . reverse
 
 runWithInputAndCheckOutput :: String -> String -> String -> String -> IO ()
 runWithInputAndCheckOutput lang program inputFile outputFile = do
-  actualOutput <- run lang program inputFile
+  input <- readFile inputFile
+  actualOutput <- run lang program input
   expectedOutput <- readFile outputFile
   putStrLn $ if trimnl actualOutput == trimnl expectedOutput
              then passed
