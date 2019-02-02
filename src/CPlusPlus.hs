@@ -1,4 +1,4 @@
-module Haskell
+module CPlusPlus
   ( run
   ) where
 
@@ -7,7 +7,7 @@ import System.Process (readProcessWithExitCode)
 import Filenames
 
 compileCmd :: FilePath -> (FilePath, [String])
-compileCmd program = ("stack", ["ghc", "--", program, "-o", executableName program])
+compileCmd program = ("clang++", [program, "-o", executableName program])
 
 type ErrorMessage = String
 

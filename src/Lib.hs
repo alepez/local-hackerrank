@@ -5,6 +5,7 @@ module Lib
 import Control.Applicative
 import Options
 import qualified Haskell
+import qualified CPlusPlus
 
 data MainOptions = MainOptions
   { optLang :: String
@@ -26,6 +27,7 @@ instance Options MainOptions where
 
 run :: String -> String -> String -> IO String
 run "hs" = Haskell.run
+run "cpp" = CPlusPlus.run
 
 passed = "Passed :)"
 
