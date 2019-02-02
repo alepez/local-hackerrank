@@ -5,4 +5,4 @@ module Filenames
 
 import System.FilePath.Posix (dropExtension)
 
-executableName = dropExtension . (++ ".exe")
+executableName = (++ ".exe") . dropExtension
